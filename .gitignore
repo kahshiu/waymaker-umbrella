@@ -1,0 +1,7 @@
+.DS_STORE
+.env
+pgdata
+waymaker-backend
+waymaker-frontend
+waymaker-caddy
+docker-compose.yml

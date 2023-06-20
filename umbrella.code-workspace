@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "waymaker-backend"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "waymaker-frontend"
+		},
+		{
+			"path": "waymaker-caddy"
+		}
+	],
+	"settings": {
+		"deno.lint": true,
+		"deno.unstable": true,
+		"liveServer.settings.multiRootWorkspaceName": "waymaker-backend"
+	}
+}

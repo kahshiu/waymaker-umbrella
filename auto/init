@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# NOTES:
+# 1. read .env file
+# 2. clone src from various projects
+
+source .env
+git clone git@github.com:kahshiu/waymaker-caddy.git $PROXY
+git clone git@github.com:kahshiu/waymaker-frontend.git $FRONTEND_WEB
+git clone git@github.com:kahshiu/waymaker-backend.git $BACKEND_API
+
+echo "cloned proxy into ${PROXY}"
+echo "cloned frontend into ${FRONTEND_WEB}"
+echo "cloned api into ${BACKEND_API}"
