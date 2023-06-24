@@ -13,11 +13,14 @@ if [ "$env" = "dev" ]; then
     # NOTE: create postgres data volume
     mkdir -p ../pgdata
 
-    # NOTE: run auto/build for frontend-web 
-    cd ./$FRONTEND_WEB
-    chmod +x auto/build
-    auto/build $env
-    cd ../
+    # NOTE: 
+    # 1. run auto/build for frontend-web 
+    # 2. optimise by not running once build/ flag to indicate rebuild -- TODO
+
+    # cd ./$FRONTEND_WEB
+    # chmod +x auto/build
+    # auto/build $env
+    # cd ../
 
     cd ./auto
     cp ./docker-compose.yml.dev ../docker-compose.yml

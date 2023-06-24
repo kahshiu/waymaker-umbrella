@@ -29,10 +29,6 @@ services:
       - pgdata 
 
   frontend-web:
-    # build:
-    #   context: ./${FRONTEND_WEB}
-    #   dockerfile: Dockerfile
-    #   target: ${FRONTEND_WEB}-dev 
     image: ${FRONTEND_WEB}-dev
     container_name: ${FRONTEND_WEB}-dev 
     env_file:
