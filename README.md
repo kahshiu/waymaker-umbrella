@@ -19,7 +19,6 @@ To work with with this project,
     - BACKEND_WATSAPP=
     - DB_VERSION=
     - DB_HOST=
-    - DB_PORT=
     - DB_USERNAME=
     - DB_PASSWORD=
     - DB_DBNAME=
@@ -33,6 +32,14 @@ To work with with this project,
 6. available environments as below:
     - dev (development)
     - prod (production)
+7. static file server: http://localhost:3000/www/...
+8. app server (frontend/ backend): http://localhost:80/...
+9. for development environment:
+    - frontend/ backend are proxied at 80 
+    - frontend direct access at 8030
+    - backend direct access at 8020
+    - db direct access at 8010
+    - details of port mapping can be read at docker-compose.yml.dev
 
 ### Additional project inclusion into `waymaker-umberlla`
 #### New Folder

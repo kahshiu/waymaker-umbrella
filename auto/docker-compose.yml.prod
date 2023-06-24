@@ -9,8 +9,6 @@ services:
     volumes:
       - ./myBackend/src:/src
       - ./pgData:/var/lib/postgresql/data
-    ports:
-      - 8100:5432
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -26,13 +24,12 @@ services:
       - ./myBackend/src:/src
       - ./myBackend/deno.json:/deno.json
     working_dir: /src
-    ports:
-      - 8000:8000
     command: deno run --watch --allow-env --allow-net --import-map=/deno.json ./server.ts
     depends_on:
       - postgres
     env_file:
       - .env
+      
   frontend:
     build:
       context: ./myFrontend
@@ -40,10 +37,9 @@ services:
     container_name: frontend 
     volumes:
       - ./myFrontend:/app
-    ports:
-      - 3000:8000
     command: |
       deno task start2
+
     #  sh -c "cp ./auto/tailwindcss /tailwindcss && chmod +x /tailwindcss && deno task start"
     # depends_on:
     #  - backend

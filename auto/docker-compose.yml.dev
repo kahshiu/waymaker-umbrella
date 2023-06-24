@@ -9,7 +9,7 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
-      - ${DB_PORT}:5432
+      - 8010:5432
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -23,6 +23,8 @@ services:
     volumes:
       - ./${BACKEND_API}/src:/app
       - ./${BACKEND_API}/deno.json:/deno.json
+    ports:
+      - 8020:8000
     working_dir: /app
     command: deno run --watch --allow-env --allow-net --import-map=/deno.json ./server.ts
     depends_on:
@@ -35,8 +37,10 @@ services:
       - .env
     volumes:
       - ./${FRONTEND_WEB}:/app
+    ports:
+      - 8030:8000
     working_dir: /app
-    command: deno task start
+    command: deno task start:docker
     depends_on:
       - backend-api
 
@@ -49,8 +53,8 @@ services:
       - ./${PROXY}/data:/data
       - ./${PROXY}/files:/usr/share/caddy/
     ports:
+      - 3000:3000
       - 80:80
-      - 8000:8000
 #      - 443:443
     depends_on:
       - backend-api
