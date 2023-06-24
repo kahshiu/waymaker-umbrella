@@ -1,0 +1,64 @@
+version: "3.9"
+services:
+  pgdata:
+    container_name: pgdata 
+    image: ${DB_VERSION}
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DBNAME}
+
+  backend-api:
+    image: ${DENO_VERSION}
+    container_name: ${BACKEND_API}-dev 
+    env_file:
+      - .env
+    volumes:
+      - ./${BACKEND_API}/src:/app
+      - ./${BACKEND_API}/deno.json:/deno.json
+    working_dir: /app
+    command: deno run --watch --allow-env --allow-net --import-map=/deno.json ./server.ts
+    depends_on:
+      - pgdata 
+
+  frontend-web:
+    # build:
+    #   context: ./${FRONTEND_WEB}
+    #   dockerfile: Dockerfile
+    #   target: ${FRONTEND_WEB}-dev 
+    image: ${FRONTEND_WEB}-dev
+    container_name: ${FRONTEND_WEB}-dev 
+    env_file:
+      - .env
+    volumes:
+      - ./${FRONTEND_WEB}:/app
+    working_dir: /app
+    command: deno task start
+    depends_on:
+      - backend-api
+
+  proxy:
+    image: ${PROXY_VERSION}
+    container_name: ${PROXY}-dev
+    volumes:
+      - ./${PROXY}/Caddyfile:/etc/caddy/Caddyfile
+      - ./${PROXY}/config:/config
+      - ./${PROXY}/data:/data
+      - ./${PROXY}/files:/usr/share/caddy/
+    ports:
+      - 80:80
+      - 8000:8000
+#      - 443:443
+    depends_on:
+      - backend-api
+      - frontend-web
+
+#      command: caddy file-server
+#      command: caddy file-server --domain example.com

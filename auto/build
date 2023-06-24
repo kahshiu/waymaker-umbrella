@@ -1,0 +1,42 @@
+#!/bin/bash
+
+source .env
+env="$1"
+dir=$(dirname "$0")
+foldername=$(basename "$PWD")
+iname="$foldername-$env"
+
+# NOTE: 
+# 2. select the right docker-compose on umbrella
+
+if [ "$env" = "dev" ]; then
+    # NOTE: create postgres data volume
+    mkdir -p ../pgdata
+
+    # NOTE: run auto/build for frontend-web 
+    cd ./$FRONTEND_WEB
+    chmod +x auto/build
+    auto/build $env
+    cd ../
+
+    cd ./auto
+    cp ./docker-compose.yml.dev ../docker-compose.yml
+    cd ../
+
+    docker-compose -p $iname up --build
+    echo "environment: dev"
+    echo "- docker-compose built, started successfully."
+
+elif [ "$env" = "prod" ]; then
+    chmod +x ./$FRONTEND_WEB/auto/build
+    ./$FRONTEND_WEB/auto/build $env
+
+    cp $dir/docker-compose.yml.prod ../$dir/docker-compose.yml
+    cd ../$dir
+    docker-compose -p $dname up --build
+    echo "environment: prod"
+    echo "- docker-compose built, started successfully."
+
+else
+    echo "Invalid environment."
+fi

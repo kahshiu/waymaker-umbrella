@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres  
+    image: ${DB_VERSION}
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./myBackend/src:/src
+      - ./pgData:/var/lib/postgresql/data
+    ports:
+      - 8100:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DBNAME}
+
+  backend:
+    # build:
+    #   context: ./my-backend
+    #   dockerfile: ./my-backend/Dockerfile
+    image: denoland/deno:1.34.3
+    container_name: backend
+    volumes:
+      - ./myBackend/src:/src
+      - ./myBackend/deno.json:/deno.json
+    working_dir: /src
+    ports:
+      - 8000:8000
+    command: deno run --watch --allow-env --allow-net --import-map=/deno.json ./server.ts
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+  frontend:
+    build:
+      context: ./myFrontend
+      dockerfile: ./Dockerfile
+    container_name: frontend 
+    volumes:
+      - ./myFrontend:/app
+    ports:
+      - 3000:8000
+    command: |
+      deno task start2
+    #  sh -c "cp ./auto/tailwindcss /tailwindcss && chmod +x /tailwindcss && deno task start"
+    # depends_on:
+    #  - backend
+    # env_file:
+    #  - .env
